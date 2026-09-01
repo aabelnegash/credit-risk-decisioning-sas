@@ -1,8 +1,8 @@
 # Experiment Log
 
-This is a running record of the major experiments completed in SAS Viya Model Studio for the HMEQ credit-risk project. The purpose is to document what was tested, what changed, and what was kept or rejected while learning the modeling workflow.
+This is a record of the major experiments completed in SAS Viya for the HMEQ credit-risk project. The purpose is to document what was tested, what changed, and what was kept or rejected while I am learning the modeling workflow.
 
-Model development decisions were based primarily on validation performance. The test partition was not used to guide iterative tuning.
+Model development decisions were based primarily on validation performance. The test partition was not used to guide iterative tuning to maintain a true final test of each model.
 
 ## Baseline model comparison
 
@@ -25,7 +25,7 @@ Gradient Boosting
 - Validation AUC: 0.9343
 - Validation KS: 0.7159
 
-Random Forest was the strongest initial model. Gradient Boosting was close enough to continue developing because it showed strong validation performance and a relatively small train-validation gap.
+Random Forest was the strongest initial model. Gradient Boosting was close enough to continue developing as it showed strong validation performance and a relatively small train-validation gap.
 
 ## Missing-value treatment
 
@@ -50,7 +50,7 @@ Imputation improved Gradient Boosting and Logistic Regression, but Decision Tree
 
 ### Imputation + unique missingness indicators
 
-The same imputation strategy was used, but a separate missingness indicator was created for each imputed variable and used as an input.
+The same imputation strategy was used but a separate missingness indicator was created for each imputed variable and used as an input.
 
 Results:
 - Logistic Regression validation AUC: 0.7834
@@ -63,7 +63,7 @@ Results:
 - Gradient Boosting validation accuracy: 0.9083
 - Top-decile cumulative lift: about 4.68
 
-The unique missingness indicators improved the overall Gradient Boosting benchmark and restored Decision Tree performance, so they were kept.
+The unique missingness indicators improved the overall Gradient Boosting performance and restored Decision Tree performance, so they were kept.
 
 ## Feature engineering
 
@@ -137,7 +137,7 @@ Learning rate 0.05:
 - Validation KS: 0.6528
 - Validation ASE: 0.1524
 
-The lower learning rate performed substantially worse. Increasing the tree count with learning rate 0.05 did not recover performance, so 0.10 was retained.
+The lower learning rate performed worse. Increasing the tree count with learning rate 0.05 did not recover performance; 0.10 was retained.
 
 ### Maximum depth
 
@@ -241,7 +241,7 @@ Leaf size 20:
 
 Leaf size 10 slightly improved ASE, accuracy, and F1, but leaf size 5 retained the strongest AUC and KS. Since KS is the primary selection statistic for this project, leaf size 5 was kept.
 
-## Current best Gradient Boosting configuration
+## Champion Model: Gradient Boosting configuration
 
 - Number of trees: 400
 - Maximum depth: 6
@@ -257,26 +257,7 @@ Current validation results:
 - F1: 0.8112
 - Cumulative lift: about 4.73
 
-## Main takeaways so far
 
-- Validation performance should drive model-development decisions.
-- Training performance is useful for diagnosing overfitting but is not the objective by itself.
-- Missing-value treatment can affect models very differently.
-- Missingness itself can contain predictive information.
-- Feature engineering needs validation evidence; a feature that makes domain sense can still fail to improve the model.
-- Hyperparameters interact, so the strongest value for one setting can change when another setting changes.
-- Greater complexity is worth keeping only when it improves validation performance.
-- A training AUC of 1.000 is a warning to investigate overfitting, not an automatic reason to reject the model.
-- Once validation improvements become marginal, continuing to test increasingly small hyperparameter changes has limited value.
 
-## Next topics
 
-- Overfitting control
-- Feature selection
-- Threshold optimization
-- Cost-sensitive lending
-- Class imbalance
-- Explainability
-- Responsible lending
-- Stability
-- Profit / approval strategy
+
