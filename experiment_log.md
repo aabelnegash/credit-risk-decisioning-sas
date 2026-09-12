@@ -258,6 +258,68 @@ Current validation results:
 - Cumulative lift: about 4.73
 
 
+## Feature Selection
+
+Feature selection was tested to determine whether reducing the number of inputs could improve the Gradient Boosting model or preserve performance with a simpler feature set.
+
+A Variable Selection node using Fast Supervised Selection was added after feature engineering. The Gradient Boosting model after variable selection used the same hyperparameters as the full-feature model so that feature selection remained the main difference.
+
+Full-feature Gradient Boosting:
+- Validation AUC: 0.9663
+- Validation KS: 0.8181
+- Validation ASE: 0.0563
+
+Gradient Boosting after Variable Selection:
+- Validation AUC: 0.9241
+- Validation KS: 0.7173
+- Validation ASE: 0.0756
+
+The selected-feature model performed substantially worse across the main validation metrics.
+
+The reduced feature set was rejected and the full feature set was retained. This showed that variables with lower individual importance can still provide useful information to Gradient Boosting through nonlinear relationships and interactions.
 
 
+## Threshold Optimization
 
+A separate threshold analysis program was created to compare lending decisions across multiple probability cutoffs.
+
+The initial comparison included thresholds from 0.05 through 0.50. Lower thresholds rejected more borrowers and caught more defaults, while higher thresholds approved more borrowers but also allowed more defaults.
+
+Selected results:
+
+- Threshold 0.05:
+  - Approval rate: 73.31%
+  - Bad approvals: 34
+  - Good borrowers rejected: 436
+  - Total modeled cost: $1,722,000
+
+- Threshold 0.10:
+  - Approval rate: 76.54%
+  - Bad approvals: 49
+  - Good borrowers rejected: 258
+  - Total modeled cost: $1,741,000
+
+Although 0.05 produced the lowest modeled cost in the broader search, 0.10 approved substantially more borrowers and rejected far fewer good borrowers while increasing modeled cost by only $19,000.
+
+A finer search was then performed around 0.10.
+
+Results near the selected threshold:
+
+- 0.095: total cost $1,753,000
+- 0.100: total cost $1,741,000
+- 0.105: total cost $1,734,000
+- 0.110: total cost $1,766,000
+
+The 0.105 threshold produced the lowest observed cost in the local search. Compared with 0.10, it approved 16 additional good borrowers while also approving one additional borrower who defaulted.
+
+Under the assumed costs:
+
+- 16 fewer good rejections saved $32,000
+- 1 additional bad approval cost $25,000
+- Net observed improvement: $7,000
+
+However, the final selected threshold was 0.10 rather than 0.105.
+
+Although 0.105 produced the lowest observed cost in the local search, the improvement over 0.10 was only $7,000. Because the threshold was being refined on the same scored dataset, selecting increasingly precise cutoffs could overfit the decision policy to small sample-specific differences. The cost assumptions were also hypothetical. The 0.10 threshold was therefore retained as the simpler and more robust choice for this exercise.
+
+Final selected lending threshold: 0.10.
